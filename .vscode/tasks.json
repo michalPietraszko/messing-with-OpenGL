@@ -2,21 +2,23 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "build",
-            "command": "./build.sh",
-            // "args": [
-            //     "-std=c++17",
-            //     "-stdlib=libc++",
-            //     "-g",
-            //     "./src/Application.cpp",
-            //     "-o",
-            //     "OpenApp"
-            // ],
+            "label": "buildPremake",
+            "command" : "./bldWithPremake.sh",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": "$gcc"
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": ["relative", "${workspaceRoot}/build"]
+            }
+        },
+        {
+            "type": "shell",
+            "label": "buildCmake",
+            "command": "./build.sh",
+            "group": "build",
+            "problemMatcher" : "$gcc"
         }
     ],
     "version": "2.0.0"

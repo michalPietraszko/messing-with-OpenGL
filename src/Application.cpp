@@ -4,7 +4,7 @@
 
 int dupa()
 {
-	std::cout<<"dupa"<<std::endl;
+	std::cout<<"dudsfddddwasdpa"<<std::endl;
 }
 
 int main()

@@ -5,10 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(lldb) Launch",
+            "name": "(lldb/premake) Launch",
             "type": "lldb",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "buildPremake",
+            "program": "${workspaceFolder}/bin/Debug/OpenApp",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "(lldb/cmake) Launch",
+            "type": "lldb",
+            "request": "launch",
+            "preLaunchTask": "buildCmake",
             "program": "${workspaceFolder}/build/OpenApp",
             "args": [],
             "cwd": "${workspaceFolder}"
