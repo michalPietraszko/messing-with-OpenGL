@@ -1,5 +1,5 @@
 //#include <GL/glew.h>
-//#include <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 
 int dupa()
@@ -9,6 +9,12 @@ int dupa()
 
 int main()
 {
+	GLFWwindow* window;
+
+	/* Initialize the library */
+	if (!glfwInit())
+		return -1;
+
 	dupa();
 	std::cin.get();
 }
