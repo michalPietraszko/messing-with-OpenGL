@@ -2,8 +2,8 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "buildPremake",
-            "command" : "./bldWithPremake.sh",
+            "label": "buildMac",
+            "command" : "./bldBinaryMac.sh",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -12,13 +12,6 @@
                 "base": "$gcc",
                 "fileLocation": ["relative", "${workspaceRoot}/build"]
             }
-        },
-        {
-            "type": "shell",
-            "label": "buildCmake",
-            "command": "./build.sh",
-            "group": "build",
-            "problemMatcher" : "$gcc"
         }
     ],
     "version": "2.0.0"

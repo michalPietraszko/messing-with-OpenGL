@@ -5,22 +5,24 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(lldb/premake) Launch",
+            "name": "(Wac) Launch",
             "type": "lldb",
             "request": "launch",
-            "preLaunchTask": "buildPremake",
+            "preLaunchTask": "buildMac",
             "program": "${workspaceFolder}/bin/Debug/OpenApp",
             "args": [],
             "cwd": "${workspaceFolder}"
         },
         {
-            "name": "(lldb/cmake) Launch",
-            "type": "lldb",
+            "name": "(Windows) Launch",
+            "type": "cppvsdbg",
             "request": "launch",
-            "preLaunchTask": "buildCmake",
-            "program": "${workspaceFolder}/build/OpenApp",
+            "program": "${workspaceFolder}/bin/Debug/OpenApp.exe",
             "args": [],
-            "cwd": "${workspaceFolder}"
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true
         }
     ]
 }
