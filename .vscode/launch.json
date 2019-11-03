@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(Wac) Launch",
+            "name": "(Mac) Launch",
             "type": "lldb",
             "request": "launch",
             "preLaunchTask": "buildMac",
