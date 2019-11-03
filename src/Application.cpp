@@ -5,6 +5,7 @@
 int dupa()
 {
 	std::cout<<"dudsfddddwasdpa"<<std::endl;
+	return 1;
 }
 
 int main()
