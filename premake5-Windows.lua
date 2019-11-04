@@ -5,6 +5,7 @@ workspace "OpenGL"
 
 IncludeDir = {}
 IncludeDir["GLFW"] = "vendor/GLFW/include"
+IncludeDir["GLEW"] = "vendor/GLEW/include"
 
 include "/vendor/GLFW"
 
@@ -20,10 +21,15 @@ project "OpenApp"
     includedirs 
     {
         "src",
-        "%{IncludeDir.GLFW}"
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.GLEW}"
     }
 
-    libdirs{ "vendor/GLFW/bin/%{cfg.buildcfg}"}
+    libdirs
+    { 
+        "vendor/GLFW/bin/%{cfg.buildcfg}"
+    }
+    
     links
     {
         "GLFW.lib",
