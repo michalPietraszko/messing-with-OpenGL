@@ -27,13 +27,15 @@ project "OpenApp"
 
     libdirs
     { 
-        "vendor/GLFW/bin/%{cfg.buildcfg}"
+        "vendor/GLFW/bin/%{cfg.buildcfg}",
+        "vendor/GLEW/lib/windows"
     }
     
     links
     {
         "GLFW.lib",
-        "opengl32.lib"
+        "opengl32.lib",
+        "glew32s.lib"
     }
     
     filter "windows"

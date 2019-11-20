@@ -1,3 +1,4 @@
+#define GLEW_STATIC
 #include <GL/glew.h> // Cross - platform proxy between OPENGL functions defined in GPU drivers and user interface
 #include <GLFW/glfw3.h> // Providde a simple API for creating windows, context and surfaces, receiving inputs and events
 // GLFW is written in C
