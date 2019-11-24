@@ -7,39 +7,32 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <cmath>
 #include <utility>
 
-#ifdef _WIN64
-	#define DEBUG_BREAK __debugbreak()
-#elif __APPLE__
-	#include <signal.h>
-	#define DEBUG_BREAK raise(SIGTRAP)
-#endif
+#include "Renderer.hpp"
+#include "VertexBuffer.hpp"
+#include "IndexBuffer.hpp"
+#include "VertexArray.hpp"
 
-#define ASSERT(x) \
-	if (!(x))     \
-		DEBUG_BREAK;
-
-#define GLCall(x)   \
-	GLClearError(); \
-	x;              \
-	ASSERT(GLLogCall(#x, __FILE__, __LINE__))
-
-static void GLClearError()
-{
-	while (glGetError() != GL_NO_ERROR)
-		;
-}
-
-static bool GLLogCall(const char *function, const char *file, int line)
-{
-	while (GLenum error = glGetError())
+namespace
+{	
+	template<int N>
+	float changeChannelGetIncrement(const float(&rgb)[N], int& currentIndex)
 	{
-		std::cout << "[OpenGL ERROR] (" << error << " ): " << function << " " << file << ":" << line << std::endl;
-		return false;
+		static bool isAdding = true;
+		if((rgb[currentIndex] >= 1 and isAdding) or (rgb[currentIndex] <= 0 and not isAdding))
+		{
+			currentIndex++;
+			if(currentIndex == N)
+			{
+				currentIndex = 0;
+				isAdding = not isAdding;	
+			}
+		}
+		return isAdding ? 0.005f : -0.005f;
 	}
-	return true;
-}
+};
 
 struct ShaderProgramSource
 {
@@ -143,6 +136,7 @@ int main()
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);//ver 3.3 
+	// core profile doesn't make a default vao 
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
@@ -176,37 +170,27 @@ int main()
 
 	glewInit();
 
-	unsigned int vao;
-	GLCall(glGenVertexArrays(1, &vao));
-	glBindVertexArray(vao);
+	VertexBuffer vertexBuffer(positions, 4 * 2 * sizeof(float));
 
-	unsigned int buffer;
-	glGenBuffers(1, &buffer); // generate buffer in gpu VRAM
+	VertexArray vertexArray;
+	VertexBufferLayout layout;
 
-	// array buffer, select this buffer (bind does this), size is undefined yet
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	layout.push<float>(2); // 2 as x and y coordinates
+	vertexArray.addBuffer(vertexBuffer, layout);
 
-	// put data into buffer, specify the size
-	glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+	IndexBuffer indexBuffer(indices, 6);
 
-	// 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
-
-	unsigned int ibo; //index buffer object
-	glGenBuffers(1, &ibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
-
-	ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
+	const ShaderProgramSource source = ParseShader("res/shaders/Basic.shader");
 	unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
 
-	GLCall(glBindVertexArray(0))
+	// bind shader
 	GLCall(glUseProgram(shader));
 
+	// look up id of uniform from shader by name
 	GLCall(int location = glGetUniformLocation(shader, "u_Color"));
 
 	ASSERT(location != -1)
+	// set the uniform 
 	GLCall(glUniform4f(location, 0.2f, 0.3f, 0.8f, 1.0f));
 
 	glBindVertexArray(0);
@@ -214,24 +198,24 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	float r = 0.0f;
-	float increment = 0.05f;
+	float rgb[] = {0, 0, 0};
+	int currentIndex{0};
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
 		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT);
-		glUseProgram(shader);
-		GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
-		glBindVertexArray(vao);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		GLCall(glClear(GL_COLOR_BUFFER_BIT));
+		// bind everything again
+		GLCall(glUseProgram(shader));
+		GLCall(glUniform4f(location, fabs(rgb[0]), fabs(rgb[1]), fabs(rgb[2]) ,1.0f));
+
+		vertexArray.bind();
+		indexBuffer.bind();
 		GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
-		if (r > 1.0f)
-			increment = -0.05f;
-		else if (r < 0.0f)
-			increment = 0.05f;
-		r += increment;
+
+		rgb[currentIndex] += changeChannelGetIncrement(rgb, currentIndex);
+
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
