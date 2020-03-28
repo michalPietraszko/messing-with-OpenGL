@@ -1,0 +1,11 @@
+# Directories
+.vs/
+.vscode/
+bin-int/
+export-compile-commands/
+build/
+bin/
+
+# Files
+*.DS_Store
+*.code-workspace
