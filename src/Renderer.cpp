@@ -3,16 +3,16 @@
 
 void GLClearError()
 {
-	while (glGetError() != GL_NO_ERROR)
-		;
+    while (glGetError() != GL_NO_ERROR)
+        ;
 }
 
-bool GLLogCall(const char *function, const char *file, int line)
+bool GLLogCall(const char* function, const char* file, int line)
 {
-	while (GLenum error = glGetError())
-	{
-		std::cout << "[OpenGL ERROR] (" << error << " ): " << function << " " << file << ":" << line << std::endl;
-		return false;
-	}
-	return true;
+    while (GLenum error = glGetError())
+    {
+        std::cout << "[OpenGL ERROR] (" << error << " ): " << function << " " << file << ":" << line << std::endl;
+        return false;
+    }
+    return true;
 }
