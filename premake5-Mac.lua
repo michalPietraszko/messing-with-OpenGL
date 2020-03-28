@@ -1,7 +1,5 @@
 -- premake5.lua
 
-require "export-compile-commands"
-
 workspace "OpenGL"
     architecture "x64"
     configurations { "Debug", "Release" }
